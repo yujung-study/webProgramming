@@ -17,10 +17,10 @@ const MainPage = () => {
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
             <Button to="/write" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-              ✍️ 편지 쓰러가기
+              편지 쓰러가기
             </Button>
             <Button to="/list" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-              📬 내 편지함
+              내 편지함
             </Button>
           </div>
         </div>

@@ -137,7 +137,7 @@ const LetterList = () => {
 
   return (
     <Layout title="내 편지함" subtitle="작성한 편지를 확인하고 관리하세요">
-      <WriteButton to="/write">✍️ 편지 쓰러가기</WriteButton>
+      <WriteButton to="/write">편지 쓰러가기</WriteButton>
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '2rem' }}>
         <SearchInput
           type="text"
