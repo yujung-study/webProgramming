@@ -86,14 +86,23 @@ const Card = styled.div`
   margin-bottom: 1.5rem;
 `;
 
+/**
+ * 편지 목록 컴포넌트
+ * @description 모든 편지를 목록으로 표시하고 검색/필터링 기능을 제공합니다.
+ */
 const LetterList = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [letters, setLetters] = useState(JSON.parse(localStorage.getItem('letters') || []));
-  const [filteredLetters, setFilteredLetters] = useState([]);
-  const currentDate = new Date();
+  // 상태 변수들
+  const [searchTerm, setSearchTerm] = useState(''); // 검색어
+  const [selectedCategory, setSelectedCategory] = useState('all'); // 선택된 카테고리
+  const [letters, setLetters] = useState(JSON.parse(localStorage.getItem('letters') || [])); // 모든 편지 데이터
+  const [filteredLetters, setFilteredLetters] = useState([]); // 필터링된 편지 목록
+  const currentDate = new Date(); // 현재 날짜
 
-  // 상태 함수
+  /**
+   * 편지의 공개/비공개 상태를 확인하는 함수
+   * @param {Object} letter - 편지 객체
+   * @returns {Object} - {isPublic, text, color} 상태 객체
+   */
   const getStatus = (letter) => {
     const isPublic = letter.isPublic === 'true' || letter.isPublic === true;
     return {
@@ -102,15 +111,14 @@ const LetterList = () => {
         letter.isLocked && currentDate < new Date(letter.publicDate) ? '공개 예정' : 
         '공개' : 
         '비공개',
-      color: getStatusColor(isPublic && (!letter.isLocked || currentDate >= new Date(letter.publicDate)))
+      color: isPublic ? '#4caf50' : '#f44336'
     };
   };
 
-  const getStatusColor = (isPublic) => {
-    return isPublic ? '#4caf50' : '#f44336';
-  };
-
-  // 검색 함수
+  /**
+   * 편지 목록을 필터링하는 함수
+   * @returns {void}
+   */
   const searchLetters = useCallback((term, category) => {
     const termLower = term.toLowerCase();
     return letters.filter(letter => {
@@ -121,6 +129,22 @@ const LetterList = () => {
     });
   }, [letters]);
 
+  // localStorage에서 편지 데이터를 불러오고 필터링
+  useEffect(() => {
+    const filtered = searchLetters(searchTerm, selectedCategory);
+    setFilteredLetters(filtered);
+  }, [searchTerm, selectedCategory, letters, searchLetters]);
+
+  // 검색어 변경 핸들러
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // 카테고리 변경 핸들러
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
+
   // 편지 삭제 함수
   const handleDelete = (id) => {
     if (window.confirm('정말로 이 편지를 삭제하시겠습니까?')) {
@@ -130,11 +154,6 @@ const LetterList = () => {
     }
   };
 
-  useEffect(() => {
-    const filtered = searchLetters(searchTerm, selectedCategory);
-    setFilteredLetters(filtered);
-  }, [searchTerm, selectedCategory, letters, searchLetters]);
-
   return (
     <Layout title="내 편지함" subtitle="작성한 편지를 확인하고 관리하세요">
       <WriteButton to="/write">편지 쓰러가기</WriteButton>
@@ -143,11 +162,11 @@ const LetterList = () => {
           type="text"
           placeholder="편지 제목 또는 내용 검색"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleSearchChange}
         />
         <CategoryFilter
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+          onChange={handleCategoryChange}
         >
           <option value="all">전체</option>
           <option value="감사">감사</option>

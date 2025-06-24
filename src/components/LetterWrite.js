@@ -3,29 +3,34 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Layout, Button } from './Layout';
 
+// 편지 작성 페이지의 설정 섹션 스타일
 const SettingSection = styled.section`
   margin-bottom: 1.5rem;
   padding: 1.5rem;
   background: #f8f9fa;
 `;
 
+// 설정 그룹을 위한 스타일 (flexbox)
 const SettingGroup = styled.div`
   display: flex;
   gap: 1rem;
 `;
 
+// 설정 카드 스타일
 const SettingCard = styled.div`
   flex: 1;
   background: white;
   padding: 1.5rem;
 `;
 
+// 설정 섹션 제목 스타일
 const SettingTitle = styled.h3`
   margin: 0 0 1rem 0;
   font-size: 1.1rem;
   color: #333;
 `;
 
+// 설정 라벨 스타일 (라디오 버튼 포함)
 const SettingLabel = styled.label`
   display: block;
   padding: 1rem;
@@ -47,6 +52,7 @@ const SettingLabel = styled.label`
   }
 `;
 
+// 컨테이너 스타일 (중앙 정렬)
 const Container = styled.div`
   max-width: 1280px;
   margin: 0 auto;
@@ -54,14 +60,17 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
+// 폼 스타일
 const Form = styled.form`
   width: 100%;
 `;
 
+// 입력 그룹 스타일
 const InputGroup = styled.div`
   margin-bottom: 1.5rem;
 `;
 
+// 레이블 스타일
 const Label = styled.label`
   display: block;
   margin-bottom: 0.5rem;
@@ -69,6 +78,7 @@ const Label = styled.label`
   color: #333;
 `;
 
+// 입력 필드 스타일
 const Input = styled.input`
   width: 100%;
   padding: 1rem;
@@ -76,6 +86,7 @@ const Input = styled.input`
   font-family: 'Pretendard', sans-serif;
 `;
 
+// 텍스트 영역 스타일
 const TextArea = styled.textarea`
   width: 100%;
   padding: 1.5rem;
@@ -85,6 +96,7 @@ const TextArea = styled.textarea`
   resize: vertical;
 `;
 
+// 카테고리 선택 스타일
 const CategorySelect = styled.select`
   width: 100%;
   padding: 0.8rem;
@@ -92,11 +104,13 @@ const CategorySelect = styled.select`
   font-family: 'Pretendard', sans-serif;
 `;
 
+// 날짜 입력 필드 스타일
 const DateInput = styled(Input)`
   border-radius: 0;
   padding: 0.8rem;
 `;
 
+// 제출 버튼 스타일
 const SubmitButton = styled(Button)`
   display: block;
   width: 100%;
@@ -105,16 +119,22 @@ const SubmitButton = styled(Button)`
   font-size: 1.1rem;
 `;
 
+/**
+ * 편지 작성 컴포넌트
+ * @description 새로운 편지를 작성하는 페이지 컴포넌트입니다.
+ * 편지의 제목, 내용, 카테고리, 공개/비공개 설정 등을 관리합니다.
+ */
 const LetterWrite = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [category, setCategory] = useState('감사');
-  const [sendDate, setSendDate] = useState('');
-  const [isPublic, setIsPublic] = useState(true);
-  const [isLocked, setIsLocked] = useState(false);
-  const [publicDate, setPublicDate] = useState('');
+  // 상태 변수들
+  const [title, setTitle] = useState(''); // 편지 제목
+  const [content, setContent] = useState(''); // 편지 내용
+  const [category, setCategory] = useState('감사'); // 카테고리 (기본값: 감사)
+  const [sendDate, setSendDate] = useState(''); // 전송 예정일
+  const [isPublic, setIsPublic] = useState(true); // 공개/비공개 상태
+  const [isLocked, setIsLocked] = useState(false); // 공개 예정 상태
+  const [publicDate, setPublicDate] = useState(''); // 공개 예정일
 
-  // State management for public/locked
+  // 공개/비공개 상태 변경 핸들러
   const handlePublicChange = (e) => {
     const value = e.target.value === 'true';
     setIsPublic(value);
@@ -124,6 +144,7 @@ const LetterWrite = () => {
     }
   };
 
+  // 공개 예정 상태 변경 핸들러
   const handleLockChange = (e) => {
     const value = e.target.value === 'true';
     setIsLocked(value);
@@ -131,14 +152,16 @@ const LetterWrite = () => {
       setPublicDate('');
     }
   };
+
   const navigate = useNavigate();
 
+  // 편지 제출 핸들러
   const handleSubmit = (e) => {
     e.preventDefault();
     
     const letters = JSON.parse(localStorage.getItem('letters') || '[]');
     const newLetter = {
-      id: Date.now(),
+      id: Date.now(), // 고유한 ID 생성
       name: title,
       content,
       category: category,
@@ -146,17 +169,18 @@ const LetterWrite = () => {
       isPublic,
       isLocked,
       publicDate: isLocked ? publicDate : null,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString() // 생성일자
     };
     
     localStorage.setItem('letters', JSON.stringify([...letters, newLetter]));
-    navigate('/list');
+    navigate('/list'); // 편지 목록 페이지로 이동
   };
 
   return (
     <Layout title="편지 작성" subtitle="미래의 나에게 전할 편지를 작성하세요">
       <Container>
         <Form onSubmit={handleSubmit}>
+          {/* 편지 제목과 카테고리 입력 */}
           <InputGroup>
             <Label>편지 제목</Label>
             <Input
@@ -180,6 +204,7 @@ const LetterWrite = () => {
             </CategorySelect>
           </InputGroup>
 
+          {/* 공개/비공개 설정 섹션 */}
           <SettingSection>
             <SettingTitle>공개/비공개 설정</SettingTitle>
             <SettingGroup>
@@ -210,7 +235,7 @@ const LetterWrite = () => {
                   <span>
                     <strong>비공개</strong>
                     <br />
-                    <small>작성자만 편지를 볼 수 있습니다.</small>
+                    <small>작성자만 내용을 확인할 수 있습니다.</small>
                   </span>
                 </SettingLabel>
               </SettingCard>
@@ -252,8 +277,8 @@ const LetterWrite = () => {
                       type="date"
                       value={publicDate}
                       onChange={(e) => setPublicDate(e.target.value)}
-                      min={new Date().toISOString().split('T')[0]}
                       required
+                      min={new Date().toISOString().split('T')[0]}
                     />
                   </div>
                 )}
